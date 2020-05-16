@@ -1,44 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/">
-<head th:replace="fragments :: head">
-</head>
-<body>
+    <head th:replace="fragments :: head"></head>
 
-<div th:replace="fragments :: page-header"></div>
+    <body>
+        <div th:replace="fragments :: page-header"></div>
 
-<div class="container body-content">
+        <div class="container body-content">
+            <h1 th:text="${#strings.capitalizeWords(title)}"></h1>
+            <form th:action="@{/search/results}" method = "post">
+                <h2>Search by:</h2>
+                <p>
+                    <span th:each="column : ${columns}">
+                        <th:block th:object="${column}">
+                            <input
+                                type="radio"
+                                name="searchType"
+                                th:id="*{key}"
+                                th:value="*{key}"
+                                th:checked="${column.key == selection}" >
 
-    <h1 th:text="${#strings.capitalizeWords(title)}"></h1>
+                            <label th:for="*{key}" th:text="*{value}"></label>
+                        </th:block>
+                    </span>
+                </p>
+                <p>
+                    <label for="searchTerm">Keyword:</label>
+                    <input type="text" name="searchTerm" id="searchTerm" />
+                </p>
+                <input type="submit" value="Search" choice="searchType"/>
+            </form>
 
-    <form th:action="@{/search/results}" method = "post">
-        <h2>Search by:</h2>
-
-        <p>
-            <span th:each="column : ${columns}">
-                <input
-                        type="radio"
-                        name="searchType"
-                        th:id="${column.key}"
-                        th:value="${column.key}"
-                        th:checked="${column.key == 'all'}"/>
-                <label th:for="${column.key}" th:text="${column.value}"></label>
-            </span>
-
-        </p>
-
-        <p>
-            <label for="searchTerm">Keyword:</label>
-            <input type="text" name="searchTerm" id="searchTerm" />
-        </p>
-
-        <input type="submit" value="Search" />
-    </form>
-
-    <hr />
-
-    <!-- TODO #4 - Loop over the search results to display all job fields. -->
-
-</div>
-
-</body>
+            <hr />
+            <table th:replace="fragments :: job-table"></table>
+        </div>
+    </body>
 </html>
